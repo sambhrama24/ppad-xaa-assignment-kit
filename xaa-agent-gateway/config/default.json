@@ -1,0 +1,4 @@
+{
+  "_note": "The agent overlay: which client_ids may act on a principal's behalf. This ships as the DEFAULT policy so the composition decision (unapproved agent => denied) holds out of the box. Override with the APPROVED_AGENTS env var; set it to an empty string to disable the overlay (pure inheritance).",
+  "approved_agents": ["client_research_assistant"]
+}

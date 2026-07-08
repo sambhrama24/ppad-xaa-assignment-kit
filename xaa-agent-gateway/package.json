@@ -1,0 +1,25 @@
+{
+  "name": "xaa-agent-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP tool that validates an ID-JAG (XAA) assertion and performs a governed read against the PPAD / App B resource stubs.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/mcp-server.js",
+    "dev": "tsx src/mcp-server.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "jose": "^5.9.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
