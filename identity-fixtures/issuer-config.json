@@ -1,0 +1,19 @@
+{
+  "issuer": "https://idp.acme.test/oauth2/default",
+  "jwks_uri": "http://localhost:4010/.well-known/jwks.json",
+  "alg": "RS256",
+  "kid": "ppad-xaa-fixture-2026",
+  "_note": "One IdP, two resource apps. Each resource has its own audience (its authorization server) and resource id (its API). An assertion is bound to exactly ONE resource — a token for 'ppad' must not be accepted by 'appb', and vice versa. That binding is the 'Cross App' part of XAA.",
+  "resources": {
+    "ppad": {
+      "audience": "https://auth.ppad.test",
+      "resource": "https://api.ppad.test/files",
+      "url": "http://localhost:4010"
+    },
+    "appb": {
+      "audience": "https://auth.appb.test",
+      "resource": "https://api.appb.test/files",
+      "url": "http://localhost:4011"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "keys": [
+    {
+      "kty": "RSA",
+      "n": "tmEO1Fny3wOefDtzD4SVUX4kZZWv3BGA5qON6VPWNiiLW0MPH_vN5EOILG39TgMWPM4KDSMc1QR7VvtDUX1AkCzlPwYIlj9eAvwkFxfZC-vPJtwPY3OHF-cZYS7lDf8JKSQH4ly2dvKZ2de_MmEM52zAPgxCMTnoqbpYi9auverqkmEZypoWEnJvC9aYHnYrZhAFRqSAuSSgk8A2JR0jsXeN52cDxOmcUzdjFqKVcfrPLz7YpWqZ0gDgQvO5ZYA2MJcWADV2weIRnCSQ-291fJbHMN58r-i2gtZCF2DqyrZmb9xnkOCkx1stjvOYcxGXafTShddGvag8oR6ep0Zr6w",
+      "e": "AQAB",
+      "kid": "ppad-xaa-fixture-2026",
+      "alg": "RS256",
+      "use": "sig"
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: PPAD Stub (XAA assignment)
+  version: 1.0.0
+  description: >
+    Thin PPAD-like resource stub for the XAA agent-identity take-home. Models
+    protected files, an allow list (explicit + public sharing), recipient
+    revocation, a governed read (== license/decryption-key issuance), and an
+    audit log. A second minimal resource app (App B) runs on :4011 with the same
+    read shape on its own audience — see ../INTEGRATION-NOTE.md.
+servers:
+  - url: http://localhost:4010
+components:
+  securitySchemes:
+    serviceKey:
+      type: http
+      scheme: bearer
+      description: Static stub service key (env STUB_SERVICE_KEY, default dev-stub-service-key).
+  parameters:
+    Workspace:
+      name: x-workspace-id
+      in: header
+      required: true
+      schema: { type: string, example: ws_acme }
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+    ReadRequest:
+      type: object
+      required: [principal, agent]
+      properties:
+        principal:
+          type: object
+          description: At least one of user_id / email is required.
+          properties:
+            user_id: { type: string, example: usr_alice }
+            email: { type: string, example: alice@acme.test }
+        agent:
+          type: object
+          required: [client_id]
+          properties:
+            client_id: { type: string, example: client_research_assistant }
+            name: { type: string, example: Acme Research Assistant }
+        assertion:
+          type: object
+          properties:
+            iss: { type: string }
+            jti: { type: string }
+        reason: { type: string, example: mcp.read_protected_file }
+paths:
+  /health:
+    get:
+      summary: Liveness.
+      responses: { "200": { description: ok } }
+  /.well-known/jwks.json:
+    get:
+      summary: Public JWKS for offline token validation.
+      responses: { "200": { description: JWKS } }
+  /v1/files/{fileId}:
+    get:
+      summary: File metadata.
+      security: [{ serviceKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/Workspace"
+        - { name: fileId, in: path, required: true, schema: { type: string } }
+      responses:
+        "200": { description: metadata }
+        "404": { description: not found, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /v1/files/{fileId}/access:
+    get:
+      summary: List recipients / allow list.
+      security: [{ serviceKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/Workspace"
+        - { name: fileId, in: path, required: true, schema: { type: string } }
+      responses: { "200": { description: recipients } }
+  /v1/files/{fileId}/read:
+    post:
+      summary: Governed read (license issuance). Enforces the human allow list only.
+      security: [{ serviceKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/Workspace"
+        - { name: fileId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ReadRequest" }
+      responses:
+        "200": { description: license_granted (audit recorded) }
+        "400": { description: invalid body, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "403": { description: principal_not_authorized (read_denied audited), content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+        "404": { description: file_not_found, content: { application/json: { schema: { $ref: "#/components/schemas/Error" } } } }
+  /v1/files/{fileId}/audit:
+    get:
+      summary: Read the audit trail for a file (newest first).
+      security: [{ serviceKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/Workspace"
+        - { name: fileId, in: path, required: true, schema: { type: string } }
+      responses: { "200": { description: events } }
+    post:
+      summary: Append a candidate-authored audit event.
+      security: [{ serviceKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/Workspace"
+        - { name: fileId, in: path, required: true, schema: { type: string } }
+      responses: { "201": { description: created } }
+  /v1/files/{fileId}/recipients/{userId}/revoke:
+    post:
+      summary: Revoke a recipient.
+      security: [{ serviceKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/Workspace"
+        - { name: fileId, in: path, required: true, schema: { type: string } }
+        - { name: userId, in: path, required: true, schema: { type: string } }
+      responses: { "200": { description: revoked }, "404": { description: not found } }
+  /v1/files/{fileId}/recipients/{userId}/restore:
+    post:
+      summary: Restore a revoked recipient.
+      security: [{ serviceKey: [] }]
+      parameters:
+        - $ref: "#/components/parameters/Workspace"
+        - { name: fileId, in: path, required: true, schema: { type: string } }
+        - { name: userId, in: path, required: true, schema: { type: string } }
+      responses: { "200": { description: restored }, "404": { description: not found } }

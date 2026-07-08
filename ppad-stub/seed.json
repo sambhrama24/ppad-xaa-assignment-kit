@@ -1,0 +1,46 @@
+{
+  "workspace_id": "ws_acme",
+  "org_id": "org_acme",
+  "_note": "Synthetic fixture data only. No real PII. Models a document-protection service: users keyed by user_id, an allow list keyed by user_id, and a sharing_mode (explicit = named recipients, public = anyone with the link). There is deliberately NO agent allow list here: the access model has no place for an agent client_id today. Deciding where the agent fits is the candidate's job.",
+  "users": [
+    { "user_id": "usr_owner", "idp_sub": "00uowner000000000000", "email": "owner@acme.test", "name": "Olivia Owner", "status": "active" },
+    { "user_id": "usr_alice", "idp_sub": "00ualice000000000000", "email": "alice@acme.test", "name": "Alice Recipient", "status": "active" },
+    { "user_id": "usr_bob", "idp_sub": "00ubob00000000000000", "email": "bob@acme.test", "name": "Bob NotOnList", "status": "active" },
+    { "user_id": "usr_charlie", "idp_sub": "00ucharlie0000000000", "email": "charlie@acme.test", "name": "Charlie Revoked", "status": "active" }
+  ],
+  "agents": [
+    { "client_id": "client_research_assistant", "name": "Acme Research Assistant", "status": "active" },
+    { "client_id": "client_unapproved_agent", "name": "Unapproved Agent", "status": "active" }
+  ],
+  "files": [
+    {
+      "file_id": "file_board_pack",
+      "name": "Q2 Board Pack.ppad",
+      "owner_user_id": "usr_owner",
+      "sharing_mode": "explicit",
+      "file_status": "active",
+      "recipients": [
+        { "user_id": "usr_alice", "email": "alice@acme.test", "status": "active", "addition_method": "explicit", "added_at": "2026-05-01T09:00:00Z", "added_by": "usr_owner" },
+        { "user_id": "usr_charlie", "email": "charlie@acme.test", "status": "revoked", "addition_method": "explicit", "added_at": "2026-05-01T09:00:00Z", "added_by": "usr_owner", "removed_at": "2026-06-01T10:00:00Z" }
+      ]
+    },
+    {
+      "file_id": "file_employment_contract",
+      "name": "Employment Contract.ppad",
+      "owner_user_id": "usr_owner",
+      "sharing_mode": "explicit",
+      "file_status": "active",
+      "recipients": [
+        { "user_id": "usr_charlie", "email": "charlie@acme.test", "status": "revoked", "addition_method": "explicit", "added_at": "2026-04-10T09:00:00Z", "added_by": "usr_owner", "removed_at": "2026-05-20T10:00:00Z" }
+      ]
+    },
+    {
+      "file_id": "file_public_brochure",
+      "name": "Public Brochure.ppad",
+      "owner_user_id": "usr_owner",
+      "sharing_mode": "public",
+      "file_status": "active",
+      "recipients": []
+    }
+  ]
+}

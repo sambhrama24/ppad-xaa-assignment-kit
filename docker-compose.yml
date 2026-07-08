@@ -1,0 +1,10 @@
+# Optional: `docker compose up` to run the stub in a container.
+# Equivalent to `npm install && npm start`. Docker is NOT required for the kit.
+services:
+  ppad-stub:
+    build: .
+    ports:
+      - "4010:4010"
+    environment:
+      PORT: "4010"
+      STUB_SERVICE_KEY: dev-stub-service-key
